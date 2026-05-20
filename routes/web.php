@@ -11,6 +11,8 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\CalificacionController;
+use App\Http\Controllers\TeamsImportController;
+use App\Http\Controllers\ExportCalificacionesController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Alumno;
 use App\Models\Grupo;
@@ -28,8 +30,21 @@ Route::middleware('auth')->group(function () {
     Route::delete('/horarios/{horario}', [HorariosController::class, 'destroy'])->name('horarios.destroy');
     Route::get('/mis-grupos', [ProfesorGruposController::class, 'index'])->name('profesor.grupos');
 
+    // Lista HTM — 1ª y 2ª pasada
     Route::get('/grupos/{grupo}/importar-alumnos', [AlumnoImportController::class, 'showForm'])->name('grupos.importar.form');
     Route::post('/grupos/{grupo}/importar-alumnos', [AlumnoImportController::class, 'import'])->name('grupos.importar.store');
+    Route::post('/grupos/{grupo}/conciliar-preview', [AlumnoImportController::class, 'previewConciliacion'])->name('grupos.conciliar.preview');
+    Route::post('/grupos/{grupo}/conciliar-aplicar', [AlumnoImportController::class, 'aplicarConciliacion'])->name('grupos.conciliar.aplicar');
+
+    // Calificaciones de Teams
+    Route::get('/grupos/{grupo}/importar-teams', [TeamsImportController::class, 'showForm'])->name('grupos.teams.form');
+    Route::post('/grupos/{grupo}/importar-teams/preview', [TeamsImportController::class, 'preview'])->name('grupos.teams.preview');
+    Route::post('/grupos/{grupo}/importar-teams/store', [TeamsImportController::class, 'store'])->name('grupos.teams.store');
+
+    // Exportar calificaciones
+    Route::get('/grupos/{grupo}/exportar', [ExportCalificacionesController::class, 'preview'])->name('grupos.exportar');
+    Route::post('/grupos/{grupo}/exportar/guardar', [ExportCalificacionesController::class, 'guardarAjustes'])->name('grupos.exportar.guardar');
+    Route::get('/grupos/{grupo}/exportar/download', [ExportCalificacionesController::class, 'download'])->name('grupos.exportar.download');
 
     // Detalle del grupo (profesor)
     Route::get('/grupos/{grupo}/detalle', [GrupoDetalleController::class, 'show'])->name('grupos.show');

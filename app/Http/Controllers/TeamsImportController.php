@@ -37,10 +37,15 @@ class TeamsImportController extends Controller
 
         $path   = $request->file('archivo')->getRealPath();
         $parser = new TeamsCalificacionesParser();
-        $parsed = $parser->parse($path);
+
+        try {
+            $parsed = $parser->parse($path);
+        } catch (\Throwable $e) {
+            return back()->with('error', 'No se pudo leer el archivo: ' . $e->getMessage());
+        }
 
         if (empty($parsed['tareas'])) {
-            return back()->with('error', 'No se encontraron tareas en el archivo de Teams.');
+            return back()->with('error', 'No se encontraron tareas en el archivo. Asegúrate de exportar desde Teams → Calificaciones → Exportar (formato Excel). Filas detectadas: ' . $parser->lastRowCount());
         }
 
         $grupo->load(['categorias.actividades', 'alumnosActivos']);

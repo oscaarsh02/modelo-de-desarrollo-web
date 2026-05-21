@@ -6,15 +6,22 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class TeamsCalificacionesParser
 {
-    /**
-     * Parsea el archivo Excel de calificaciones exportado por Teams.
-     *
-     * @param  string  $path  Ruta temporal del archivo subido
-     * @return array{materia: string, alumnos: array<string,array>, tareas: array}
-     */
+    private int $rowCount = 0;
+
+    public function lastRowCount(): int
+    {
+        return $this->rowCount;
+    }
+
     public function parse(string $path): array
     {
-        $rows = Excel::toArray([], $path)[0] ?? [];
+        $sheets = Excel::toArray([], $path);
+        $rows   = $sheets[0] ?? [];
+        $this->rowCount = count($rows);
+
+        if (empty($rows)) {
+            return ['materia' => '', 'tareas' => [], 'alumnos' => []];
+        }
 
         // Fila 0: título (col 3 = nombre del curso)
         $titulo = '';

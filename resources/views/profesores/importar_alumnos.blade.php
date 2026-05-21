@@ -62,8 +62,7 @@
                 <span class="inline-block rounded-full bg-orange-100 px-3 py-1 text-xs font-bold uppercase tracking-widest text-orange-800 mb-2">1ª Pasada</span>
                 <h2 class="text-2xl font-bold">Alta de alumnos</h2>
                 <p class="mt-1 text-sm leading-7 text-slate-500">
-                    Sube el archivo <strong>Resumen de lista de clase (.htm)</strong> exportado del SAES para registrar a los alumnos del grupo.
-                    El sistema extrae nombre, matrícula y correo automáticamente.
+                    Sube el archivo .html de autoservicios BUAP para registrar a los alumnos del grupo. El sistema extrae nombre, matrícula y correo automáticamente.
                 </p>
             </div>
 

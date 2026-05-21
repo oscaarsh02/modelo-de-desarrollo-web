@@ -63,10 +63,14 @@
                             <template x-if="nombre"><span x-text="nombre"></span></template>
                         </p>
                         <p class="mt-1 text-xs text-slate-400" x-show="!nombre">Excel de calificaciones exportado desde Teams</p>
-                        <input type="file" name="archivo" accept=".xlsx,.xls" class="hidden"
+                        <input type="file" name="archivo" accept=".xlsx,.xls,.csv" class="hidden"
                                @change="nombre = $event.target.files[0]?.name ?? null" />
                     </label>
-                    @error('archivo')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                    @error('archivo')
+                        <div class="mt-3 rounded-[16px] border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                            {{ $message }}
+                        </div>
+                    @enderror
                 </div>
 
                 <button type="submit" class="btn-primary w-full justify-center">

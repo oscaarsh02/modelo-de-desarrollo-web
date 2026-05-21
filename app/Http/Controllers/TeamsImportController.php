@@ -32,7 +32,7 @@ class TeamsImportController extends Controller
         $this->authorizeProfesor($grupo);
 
         $request->validate([
-            'archivo' => 'required|file|mimes:xlsx,xls',
+            'archivo' => 'required|file|extensions:xlsx,xls',
         ]);
 
         $path   = $request->file('archivo')->getRealPath();

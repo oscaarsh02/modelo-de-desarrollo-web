@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Calificacion;
 use App\Models\Grupo;
 use App\Models\Profesor;
+use App\Services\CalificacionesService;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -14,6 +15,10 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class ExportCalificacionesController extends Controller
 {
+    public function __construct(private CalificacionesService $calificaciones)
+    {
+    }
+
     /**
      * Vista previa con tabla editable de calificaciones.
      */
@@ -32,8 +37,18 @@ class ExportCalificacionesController extends Controller
 
         // Construir matriz de calificaciones [alumno_id][actividad_id] = calificacion (0-10)
         $matriz = [];
+        $categoriasAsistencia = [];
         foreach ($alumnos as $alumno) {
             foreach ($categorias as $cat) {
+                if ($this->calificaciones->categoriaEsAsistencia($cat)) {
+                    $resumen = $this->calificaciones->resumenAsistencia($grupo, $alumno->id);
+                    $matriz[$alumno->id]["asistencia_{$cat->id}"] = $resumen['calificacion'] !== null
+                        ? round($resumen['calificacion'] / 10, 2)
+                        : null;
+                    $categoriasAsistencia[] = $cat->id;
+                    continue;
+                }
+
                 foreach ($cat->actividades as $act) {
                     $cal = $act->calificaciones->firstWhere('alumno_id', $alumno->id);
                     $valor = $cal ? round($cal->calificacion / 10, 2) : null;
@@ -41,8 +56,9 @@ class ExportCalificacionesController extends Controller
                 }
             }
         }
+        $categoriasAsistencia = array_values(array_unique($categoriasAsistencia));
 
-        return view('profesores.exportar_calificaciones', compact('grupo', 'categorias', 'alumnos', 'matriz'));
+        return view('profesores.exportar_calificaciones', compact('grupo', 'categorias', 'alumnos', 'matriz', 'categoriasAsistencia'));
     }
 
     /**
@@ -56,6 +72,10 @@ class ExportCalificacionesController extends Controller
 
         foreach ($ajustes as $alumnoId => $actividades) {
             foreach ($actividades as $actividadId => $valor) {
+                if (! ctype_digit((string) $actividadId)) {
+                    continue;
+                }
+
                 if ($valor === null || $valor === '') {
                     Calificacion::where('actividad_id', $actividadId)
                         ->where('alumno_id', $alumnoId)
@@ -119,6 +139,11 @@ class ExportCalificacionesController extends Controller
         $actColumnas = []; // actividad_id => índice de columna
 
         foreach ($categorias as $cat) {
+            if ($this->calificaciones->categoriaEsAsistencia($cat)) {
+                $actColumnas["asistencia_{$cat->id}"] = $colDatos++;
+                continue;
+            }
+
             foreach ($cat->actividades as $act) {
                 $actColumnas[$act->id] = $colDatos++;
             }
@@ -137,7 +162,7 @@ class ExportCalificacionesController extends Controller
         $sheet->getStyleByColumnAndRow(1, 2)->getFont()->setBold(true);
         $catColStart = 4;
         foreach ($categorias as $cat) {
-            $numActs = $cat->actividades->count();
+            $numActs = $this->calificaciones->categoriaEsAsistencia($cat) ? 1 : $cat->actividades->count();
             if ($numActs === 0) {
                 continue;
             }
@@ -155,7 +180,7 @@ class ExportCalificacionesController extends Controller
         $sheet->getStyleByColumnAndRow(1, 3)->getFont()->setBold(true);
         $catColStart = 4;
         foreach ($categorias as $cat) {
-            $numActs = $cat->actividades->count();
+            $numActs = $this->calificaciones->categoriaEsAsistencia($cat) ? 1 : $cat->actividades->count();
             if ($numActs === 0) {
                 continue;
             }
@@ -173,6 +198,13 @@ class ExportCalificacionesController extends Controller
         $sheet->setCellValueByColumnAndRow(2, 4, 'Nombre de Alumno');
         $sheet->setCellValueByColumnAndRow(3, 4, 'ID');
         foreach ($categorias as $cat) {
+            if ($this->calificaciones->categoriaEsAsistencia($cat)) {
+                $col = $actColumnas["asistencia_{$cat->id}"];
+                $sheet->setCellValueByColumnAndRow($col, 4, 'Asistencias');
+                $sheet->getColumnDimensionByColumn($col)->setWidth(18);
+                continue;
+            }
+
             foreach ($cat->actividades as $act) {
                 $col = $actColumnas[$act->id];
                 $sheet->setCellValueByColumnAndRow($col, 4, $act->nombre);
@@ -197,6 +229,15 @@ class ExportCalificacionesController extends Controller
             $sheet->setCellValueByColumnAndRow(3, $rowNum, $alumno->matricula);
 
             foreach ($categorias as $cat) {
+                if ($this->calificaciones->categoriaEsAsistencia($cat)) {
+                    $col = $actColumnas["asistencia_{$cat->id}"];
+                    $resumen = $this->calificaciones->resumenAsistencia($grupo, $alumno->id);
+                    $valor = $resumen['calificacion'] !== null ? round($resumen['calificacion'] / 10, 2) : 0;
+                    $sheet->setCellValueByColumnAndRow($col, $rowNum, $valor);
+                    $sheet->getStyleByColumnAndRow($col, $rowNum)->getNumberFormat()->setFormatCode('0.00');
+                    continue;
+                }
+
                 foreach ($cat->actividades as $act) {
                     $col = $actColumnas[$act->id];
                     $cal = $act->calificaciones->firstWhere('alumno_id', $alumno->id);
@@ -248,7 +289,9 @@ class ExportCalificacionesController extends Controller
     {
         $partes = [];
         foreach ($categorias as $cat) {
-            $actsIds = $cat->actividades->pluck('id')->toArray();
+            $actsIds = $this->calificaciones->categoriaEsAsistencia($cat)
+                ? ["asistencia_{$cat->id}"]
+                : $cat->actividades->pluck('id')->toArray();
             if (empty($actsIds)) {
                 continue;
             }

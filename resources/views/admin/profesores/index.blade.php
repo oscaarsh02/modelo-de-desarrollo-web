@@ -5,19 +5,19 @@
     <section class="panel-strong overflow-hidden">
         <div class="flex flex-col gap-6 px-6 py-8 lg:flex-row lg:items-end lg:justify-between lg:px-10 lg:py-10">
             <div class="space-y-4">
-                <span class="eyebrow">Gestion docente</span>
-                <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Directorio de profesores</h1>
+                <span class="eyebrow">Gestión docente</span>
+                <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Directorio de docentes</h1>
                 <p class="max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-                    Desde aqui controlas las cuentas docentes que despues operaran sus equipos, grupos y calificaciones.
+                    Administra las cuentas de los docentes. Puedes crear nuevas cuentas, buscar por nombre y restablecer contraseñas.
                 </p>
             </div>
 
             <div class="flex flex-col gap-3 lg:flex-row">
                 <a href="{{ route('profesores.search') }}" class="btn-secondary">
-                    Buscar profesor
+                    Buscar docente
                 </a>
                 <a href="{{ route('profesores.create') }}" class="btn-primary">
-                    Nuevo profesor
+                    Nuevo docente
                 </a>
             </div>
         </div>
@@ -37,8 +37,8 @@
                 <thead class="border-b border-slate-200 bg-white/70">
                     <tr>
                         <th class="px-6 py-4 font-semibold">Nombre</th>
-                        <th class="px-6 py-4 font-semibold">Matricula</th>
-                        <th class="px-6 py-4 font-semibold">Cuenta</th>
+                        <th class="px-6 py-4 font-semibold">Matrícula</th>
+                        <th class="px-6 py-4 font-semibold">Estado de cuenta</th>
                         <th class="px-6 py-4 font-semibold">Acciones</th>
                     </tr>
                 </thead>
@@ -60,9 +60,9 @@
                                     <button
                                         type="submit"
                                         class="text-sm font-semibold text-slate-800 transition hover:text-slate-950"
-                                        onclick="return confirm('Se generara una nueva password para este profesor. Continuar?')"
+                                        onclick="return confirm('¿Restablecer la contraseña de {{ $profesor->nombre }}? Se mostrará la nueva contraseña generada.')"
                                     >
-                                        Regenerar password
+                                        Restablecer contraseña
                                     </button>
                                 </form>
                             </td>
@@ -70,7 +70,7 @@
                     @empty
                         <tr>
                             <td colspan="4" class="px-6 py-10 text-center text-sm text-slate-500">
-                                No hay profesores registrados.
+                                No hay docentes registrados. Crea el primero con el botón "Nuevo docente".
                             </td>
                         </tr>
                     @endforelse

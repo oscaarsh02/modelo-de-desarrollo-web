@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Grupo;
 use App\Models\Profesor;
+use App\Services\CalificacionesService;
 
 class GrupoDetalleController extends Controller
 {
-    public function show(Grupo $grupo)
+    public function show(Grupo $grupo, CalificacionesService $calificaciones)
     {
         $this->authorizeProfesor($grupo);
 
@@ -21,34 +22,7 @@ class GrupoDetalleController extends Controller
         $alumnosBaja   = $grupo->alumnos()->wherePivotNotNull('baja_at')->orderBy('nombre')->get();
         $categorias    = $grupo->categorias;
 
-        $concentrado = $alumnos->map(function ($alumno) use ($categorias) {
-            $filaCats = $categorias->map(function ($cat) use ($alumno) {
-                $actividades = $cat->actividades->map(function ($act) use ($alumno) {
-                    $cal = $act->calificaciones->firstWhere('alumno_id', $alumno->id);
-                    return ['actividad' => $act, 'calificacion' => $cal?->calificacion];
-                });
-
-                $valores  = $actividades->whereNotNull('calificacion')->pluck('calificacion');
-                $promedio = $valores->isNotEmpty() ? round($valores->average(), 2) : null;
-
-                return ['categoria' => $cat, 'actividades' => $actividades, 'promedio' => $promedio];
-            });
-
-            $ponderadoTotal    = 0;
-            $ponderacionAcum   = 0;
-            $filaCats->each(function ($f) use (&$ponderadoTotal, &$ponderacionAcum) {
-                if ($f['promedio'] !== null) {
-                    $ponderadoTotal  += $f['promedio'] * ($f['categoria']->ponderacion / 100);
-                    $ponderacionAcum += $f['categoria']->ponderacion;
-                }
-            });
-
-            return [
-                'alumno'            => $alumno,
-                'categorias'        => $filaCats,
-                'promedio_ponderado' => $ponderacionAcum > 0 ? round($ponderadoTotal, 2) : null,
-            ];
-        });
+        $concentrado = $calificaciones->construirConcentrado($grupo, $alumnos, $categorias);
 
         return view('profesores.grupo_show', compact('grupo', 'alumnos', 'alumnosBaja', 'categorias', 'concentrado'));
     }

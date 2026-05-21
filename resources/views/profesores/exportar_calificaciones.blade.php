@@ -60,7 +60,9 @@
             <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 min-w-[140px]">
                 <p class="text-xs text-slate-500">{{ $cat->nombre }}</p>
                 <p class="text-2xl font-bold text-slate-900">{{ $cat->ponderacion }}<span class="text-sm font-normal text-slate-400">%</span></p>
-                <p class="text-xs text-slate-400">{{ $cat->actividades->count() }} actividad(es)</p>
+                <p class="text-xs text-slate-400">
+                    {{ in_array($cat->id, $categoriasAsistencia ?? [], true) ? 'Asistencia automatica' : $cat->actividades->count() . ' actividad(es)' }}
+                </p>
             </div>
             @endforeach
             <div class="rounded-2xl border border-orange-200 bg-orange-50 px-4 py-3 min-w-[140px]">
@@ -94,7 +96,7 @@
                             <th class="px-4 py-3 text-left font-semibold sticky left-8 bg-slate-900 z-10 min-w-[200px]" rowspan="2">Alumno</th>
                             @foreach($categorias as $cat)
                                 <th class="px-2 py-2 text-center font-semibold bg-slate-800 border-l border-slate-700"
-                                    colspan="{{ $cat->actividades->count() ?: 1 }}">
+                                    colspan="{{ in_array($cat->id, $categoriasAsistencia ?? [], true) ? 1 : ($cat->actividades->count() ?: 1) }}">
                                     {{ $cat->nombre }}
                                     <span class="ml-1 text-xs font-normal text-slate-400">({{ $cat->ponderacion }}%)</span>
                                 </th>
@@ -103,6 +105,11 @@
                         </tr>
                         <tr class="bg-slate-800 text-slate-300 text-xs">
                             @foreach($categorias as $cat)
+                                @if(in_array($cat->id, $categoriasAsistencia ?? [], true))
+                                    <th class="px-2 py-2 text-center font-medium border-l border-slate-700 max-w-[100px]">
+                                        <span class="block truncate max-w-[100px]" title="Asistencias registradas">Asistencias</span>
+                                    </th>
+                                @else
                                 @forelse($cat->actividades as $act)
                                     <th class="px-2 py-2 text-center font-medium border-l border-slate-700 max-w-[100px]">
                                         <span class="block truncate max-w-[100px]" title="{{ $act->nombre }}">{{ Str::limit($act->nombre, 18) }}</span>
@@ -110,6 +117,7 @@
                                 @empty
                                     <th class="px-2 py-2 text-center text-slate-500 border-l border-slate-700">—</th>
                                 @endforelse
+                                @endif
                             @endforeach
                         </tr>
                     </thead>
@@ -119,7 +127,9 @@
                             $finalPonderado = 0;
                             $ponderacionTotal = $categorias->sum('ponderacion');
                             foreach ($categorias as $cat) {
-                                $vals = $cat->actividades->map(fn($act) => $matriz[$alumno->id][$act->id] ?? null)->filter(fn($v) => $v !== null);
+                                $vals = in_array($cat->id, $categoriasAsistencia ?? [], true)
+                                    ? collect([$matriz[$alumno->id]['asistencia_' . $cat->id] ?? null])->filter(fn($v) => $v !== null)
+                                    : $cat->actividades->map(fn($act) => $matriz[$alumno->id][$act->id] ?? null)->filter(fn($v) => $v !== null);
                                 if ($vals->isNotEmpty()) {
                                     $finalPonderado += $vals->average() * ($cat->ponderacion / 100);
                                 }
@@ -135,7 +145,18 @@
                                 <p class="font-mono text-xs text-slate-400">{{ $alumno->matricula }}</p>
                             </td>
                             @foreach($categorias as $cat)
-                                @foreach($cat->actividades as $act)
+                                @if(in_array($cat->id, $categoriasAsistencia ?? [], true))
+                                <td class="px-2 py-2 text-center border-l border-slate-100">
+                                    <input
+                                        type="number"
+                                        value="{{ $matriz[$alumno->id]['asistencia_' . $cat->id] ?? '' }}"
+                                        min="0" max="10" step="0.01" readonly
+                                        class="w-16 rounded-xl border border-teal-100 bg-teal-50 px-2 py-1 text-center text-sm font-mono text-teal-800
+                                               [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                        placeholder="—">
+                                </td>
+                                @else
+                                @forelse($cat->actividades as $act)
                                 <td class="px-2 py-2 text-center border-l border-slate-100">
                                     <input
                                         type="number"
@@ -147,7 +168,10 @@
                                                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                         placeholder="—">
                                 </td>
-                                @endforeach
+                                @empty
+                                <td class="px-2 py-2 text-center border-l border-slate-100 text-slate-300">—</td>
+                                @endforelse
+                                @endif
                             @endforeach
                             <td class="px-4 py-2 text-center border-l border-slate-200 font-bold text-slate-900">
                                 {{ $ponderacionTotal > 0 ? number_format($finalPonderado, 2) : '—' }}

@@ -9,10 +9,10 @@
                     <span>&larr;</span>
                     <span>Volver al directorio</span>
                 </a>
-                <span class="eyebrow">Alta de docente</span>
-                <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Registrar profesor</h1>
+                <span class="eyebrow">Nuevo docente</span>
+                <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Registrar docente</h1>
                 <p class="max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-                    Crea una cuenta docente manualmente para que el profesor pueda iniciar sesion en el sistema.
+                    Crea una cuenta para que el docente pueda iniciar sesión y gestionar sus grupos y calificaciones.
                 </p>
             </div>
         </div>
@@ -41,13 +41,14 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700">Matricula</label>
-                    <input type="text" name="matricula" value="{{ old('matricula') }}" class="mt-2 block w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100" required>
+                    <label class="block text-sm font-semibold text-slate-700">Matrícula</label>
+                    <input type="text" name="matricula" value="{{ old('matricula') }}" placeholder="Ej: L12345" class="mt-2 block w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100" required>
+                    <p class="mt-1 text-xs text-slate-400">La matrícula se usará como nombre de usuario para iniciar sesión.</p>
                 </div>
 
                 <div class="flex flex-wrap gap-3">
                     <button type="submit" class="btn-primary">
-                        Guardar profesor
+                        Crear cuenta docente
                     </button>
                     <a href="{{ route('profesores.index') }}" class="btn-secondary">
                         Cancelar
@@ -57,15 +58,15 @@
         </article>
 
         <article class="panel p-6 sm:p-8">
-            <h2 class="text-2xl font-bold">Que sucede al registrar</h2>
+            <h2 class="text-2xl font-bold">¿Qué pasa al crear la cuenta?</h2>
             <div class="mt-6 space-y-4">
                 <div class="rounded-[22px] bg-slate-950 p-5 text-white">
-                    <p class="text-xs uppercase tracking-[0.22em] text-slate-300">Cuenta</p>
-                    <p class="mt-3 text-sm leading-7 text-slate-300">Se crea el profesor y se genera una contrasena temporal para su acceso.</p>
+                    <p class="text-xs uppercase tracking-[0.22em] text-slate-300">Contraseña generada</p>
+                    <p class="mt-3 text-sm leading-7 text-slate-300">Se genera automáticamente una contraseña temporal que deberás compartir con el docente.</p>
                 </div>
                 <div class="rounded-[22px] bg-white/85 p-5">
-                    <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Uso</p>
-                    <p class="mt-3 text-sm leading-7 text-slate-600">El docente podra entrar y ver sus equipos cuando tenga grupos vinculados.</p>
+                    <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Acceso al sistema</p>
+                    <p class="mt-3 text-sm leading-7 text-slate-600">El docente podrá iniciar sesión con su matrícula. Verá sus grupos cuando el PDF de horarios esté importado y tenga grupos asignados.</p>
                 </div>
             </div>
         </article>

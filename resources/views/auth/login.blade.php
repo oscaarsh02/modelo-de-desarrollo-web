@@ -1,10 +1,10 @@
 <x-guest-layout>
     <div class="space-y-6">
         <div class="space-y-2">
-            <span class="eyebrow">Inicio de sesion</span>
-            <h2 class="text-3xl font-bold">Entrar al sistema</h2>
+            <span class="eyebrow">Inicio de sesión</span>
+            <h2 class="text-3xl font-bold">Bienvenido de vuelta</h2>
             <p class="text-sm leading-7 text-slate-600">
-                Usa tu matricula y tu contrasena para acceder a la vista correspondiente.
+                Ingresa tu matrícula y contraseña para acceder al sistema.
             </p>
         </div>
 
@@ -14,7 +14,7 @@
             @csrf
 
             <div>
-                <x-input-label for="matricula" :value="__('Matricula')" />
+                <x-input-label for="matricula" :value="__('Matrícula')" />
                 <x-text-input id="matricula"
                     class="mt-2 block w-full"
                     type="text"
@@ -26,7 +26,7 @@
             </div>
 
             <div>
-                <x-input-label for="password" :value="__('Contrasena')" />
+                <x-input-label for="password" :value="__('Contraseña')" />
                 <x-text-input id="password"
                     class="mt-2 block w-full"
                     type="password"
@@ -44,13 +44,13 @@
 
                 @if (Route::has('password.request'))
                     <a class="text-sm font-semibold text-slate-600 transition hover:text-slate-900" href="{{ route('password.request') }}">
-                        Olvide mi contrasena
+                        Olvidé mi contraseña
                     </a>
                 @endif
             </div>
 
             <x-primary-button class="w-full justify-center">
-                Entrar
+                Iniciar sesión
             </x-primary-button>
         </form>
     </div>

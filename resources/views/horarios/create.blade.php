@@ -10,13 +10,13 @@
                     <span>Volver al mapa de equipos</span>
                 </a>
 
-                <span class="eyebrow">Carga de horarios</span>
+                <span class="eyebrow">Importar horarios</span>
                 <div class="space-y-4">
                     <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
-                        Importa el PDF oficial y organiza la programacion academica.
+                        Importar PDF de horarios.
                     </h1>
                     <p class="max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-                        Este proceso registra materias, grupos, salones, horarios y profesores para que queden visibles en el sistema.
+                        Sube el PDF oficial de Secretaría Académica. El sistema registrará automáticamente materias, grupos, salones, horarios y docentes.
                     </p>
                 </div>
             </div>
@@ -24,17 +24,17 @@
             <div class="soft-grid rounded-[28px] border border-slate-200/70 bg-white/55 p-5">
                 <div class="space-y-4">
                     <div class="rounded-[24px] bg-slate-950 p-5 text-white">
-                        <p class="text-xs uppercase tracking-[0.24em] text-slate-300">Flujo actual</p>
-                        <h2 class="mt-2 text-2xl font-bold">Importacion desde PDF</h2>
+                        <p class="text-xs uppercase tracking-[0.24em] text-slate-300">¿Qué se importa?</p>
+                        <h2 class="mt-2 text-2xl font-bold">Datos del PDF</h2>
                         <p class="mt-3 text-sm leading-7 text-slate-300">
-                            La carga toma el documento oficial y lo distribuye en registros consultables por administrador y profesor.
+                            NRC, clave, materia, grupo, día, hora, docente y salón quedan registrados en el sistema.
                         </p>
                     </div>
 
                     <div class="rounded-[24px] bg-white/85 p-5">
                         <p class="text-xs uppercase tracking-[0.24em] text-slate-500">Resultado</p>
                         <p class="mt-2 text-sm leading-7 text-slate-600">
-                            Una vez procesado, el mapa de equipos muestra NRC, materia, grupo, horario, salon y profesor.
+                            Los grupos aparecen en el mapa de horarios y los docentes pueden ver sus grupos asignados al iniciar sesión.
                         </p>
                     </div>
                 </div>
@@ -96,14 +96,14 @@
                     </div>
 
                     <label for="pdf" class="mt-5 block cursor-pointer">
-                        <span class="text-lg font-bold text-slate-900">Selecciona un PDF academico</span>
-                        <span class="mt-2 block text-sm text-slate-500">o arrastralo dentro de esta zona</span>
+                        <span class="text-lg font-bold text-slate-900">Selecciona el PDF de horarios</span>
+                        <span class="mt-2 block text-sm text-slate-500">o arrástralo dentro de esta zona</span>
                     </label>
 
                     <input type="file" name="pdf" id="pdf" accept="application/pdf" class="hidden" required>
 
                     <div id="fileName" class="mt-6 rounded-[20px] bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500">
-                        Ningun archivo seleccionado
+                        Ningún archivo seleccionado
                     </div>
                 </div>
 
@@ -114,26 +114,26 @@
         </article>
 
         <article class="panel p-6 sm:p-8">
-            <h2 class="text-2xl font-bold">Que procesa esta carga</h2>
+            <h2 class="text-2xl font-bold">¿Cómo funciona?</h2>
             <div class="mt-6 space-y-4">
                 <div class="rounded-[22px] bg-slate-950 p-5 text-white">
-                    <p class="text-xs uppercase tracking-[0.22em] text-slate-300">Datos esperados</p>
+                    <p class="text-xs uppercase tracking-[0.22em] text-slate-300">Paso 1</p>
                     <p class="mt-3 text-sm font-medium leading-7 text-slate-200">
-                        NRC, clave, materia, grupo, dia, hora, profesor y salon.
+                        Sube el PDF oficial de Secretaría Académica con el horario del periodo.
                     </p>
                 </div>
 
                 <div class="rounded-[22px] bg-white/85 p-5">
-                    <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Salida</p>
+                    <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Paso 2</p>
                     <p class="mt-3 text-sm leading-7 text-slate-600">
-                        Materias, equipos, salones, docentes y bloques de horario listos para consulta.
+                        El sistema extrae automáticamente NRC, materia, grupo, horario, salón y docente.
                     </p>
                 </div>
 
                 <div class="rounded-[22px] bg-white/85 p-5">
-                    <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Uso</p>
+                    <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Paso 3</p>
                     <p class="mt-3 text-sm leading-7 text-slate-600">
-                        Sirve como punto de entrada para la demostracion funcional del sistema.
+                        Los grupos quedan disponibles en el sistema. Los docentes pueden iniciar sesión y ver sus grupos asignados.
                     </p>
                 </div>
             </div>
@@ -148,7 +148,7 @@
     const dropZone = document.getElementById('dropZone');
 
     function setSelectedFile(file) {
-        fileName.textContent = file ? `Archivo listo: ${file.name}` : 'Ningun archivo seleccionado';
+        fileName.textContent = file ? `Archivo listo: ${file.name}` : 'Ningún archivo seleccionado';
         submitBtn.disabled = !file;
     }
 

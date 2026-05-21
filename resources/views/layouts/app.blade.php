@@ -25,8 +25,8 @@
                     <a href="{{ auth()->check() ? route('dashboard') : url('/') }}" class="flex items-center gap-3">
                         <img src="{{ asset('images/Untitled.png') }}" alt="Logo" class="h-9 w-9 rounded-xl shadow-sm">
                         <div>
-                            <p class="font-['Space_Grotesk'] text-xl font-bold tracking-tight text-slate-900">Equipos Academicos</p>
-                            <p class="text-[11px] font-bold uppercase tracking-[0.32em] text-slate-500">Campus control suite</p>
+                            <p class="font-['Space_Grotesk'] text-xl font-bold tracking-tight text-slate-900">Equipos Académicos</p>
+                            <p class="text-[11px] font-bold uppercase tracking-[0.32em] text-slate-500">Gestión escolar</p>
                         </div>
                     </a>
 
@@ -39,27 +39,37 @@
 
                             @if($role === 'admin')
                                 <a href="{{ route('dashboard') }}" class="{{ $current === 'dashboard' ? 'nav-link-active' : 'nav-link' }}">Panel</a>
-                                <a href="{{ route('horarios.index') }}" class="{{ str_starts_with($current ?? '', 'horarios.') ? 'nav-link-active' : 'nav-link' }}">Equipos</a>
+                                <a href="{{ route('horarios.index') }}" class="{{ str_starts_with($current ?? '', 'horarios.') ? 'nav-link-active' : 'nav-link' }}">Horarios</a>
                                 <a href="{{ route('profesores.index') }}" class="{{ str_starts_with($current ?? '', 'profesores.') ? 'nav-link-active' : 'nav-link' }}">Docentes</a>
                             @elseif($role === 'alumno')
                                 <a href="{{ route('alumno.dashboard') }}" class="{{ $current === 'alumno.dashboard' ? 'nav-link-active' : 'nav-link' }}">Mis materias</a>
+                                <a href="{{ route('alumno.qr') }}" class="{{ $current === 'alumno.qr' ? 'nav-link-active' : 'nav-link' }}">Mi código QR</a>
+                                <a href="{{ route('alumno.asistencias') }}" class="{{ $current === 'alumno.asistencias' ? 'nav-link-active' : 'nav-link' }}">Mis asistencias</a>
                             @else
-                                <a href="{{ route('profesor.grupos') }}" class="{{ $current === 'profesor.grupos' ? 'nav-link-active' : 'nav-link' }}">Mis equipos</a>
+                                <a href="{{ route('profesor.grupos') }}" class="{{ $current === 'profesor.grupos' ? 'nav-link-active' : 'nav-link' }}">Mis grupos</a>
                             @endif
                         @endauth
                     </div>
 
                     <div class="flex items-center gap-3">
                         @auth
+                            @php
+                                $roleLabel = match(auth()->user()->role) {
+                                    'admin' => 'Administrador',
+                                    'alumno' => 'Alumno',
+                                    'profesor' => 'Docente',
+                                    default => auth()->user()->role,
+                                };
+                            @endphp
                             <div class="hidden rounded-full border border-slate-200/70 bg-white/75 px-4 py-2 shadow-sm md:block">
                                 <p class="text-sm font-semibold text-slate-900">{{ auth()->user()->name }}</p>
-                                <p class="text-[11px] uppercase tracking-[0.24em] text-slate-500">{{ auth()->user()->role }}</p>
+                                <p class="text-[11px] uppercase tracking-[0.24em] text-slate-500">{{ $roleLabel }}</p>
                             </div>
 
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="btn-secondary px-4 py-2.5">
-                                    Salir
+                                    Cerrar sesión
                                 </button>
                             </form>
                         @else

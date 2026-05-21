@@ -5,13 +5,13 @@
     <section class="panel-strong overflow-hidden">
         <div class="grid gap-8 px-6 py-8 lg:grid-cols-[1.15fr,0.85fr] lg:px-10 lg:py-10">
             <div class="space-y-5">
-                <span class="eyebrow">Mapa academico</span>
+                <span class="eyebrow">Horarios del periodo</span>
                 <div class="space-y-4">
                     <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
-                        Equipos, materias y horarios con lectura clara y presentacion ejecutiva.
+                        Materias, grupos y horarios asignados.
                     </h1>
                     <p class="max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-                        La programacion importada se organiza en tarjetas y tablas con mejor jerarquia visual, para que la revision sea rapida y la demo se vea solida.
+                        Consulta todos los grupos importados con su NRC, materia, docente y salón. Los horarios se organizan por día y hora.
                     </p>
                 </div>
 
@@ -24,20 +24,20 @@
             </div>
 
             <div class="panel-dark p-6 text-white">
-                <p class="text-xs font-bold uppercase tracking-[0.24em] text-slate-300">Mapa operativo</p>
-                <h2 class="mt-3 text-3xl font-bold text-white">Lectura institucional</h2>
+                <p class="text-xs font-bold uppercase tracking-[0.24em] text-slate-300">Resumen del periodo</p>
+                <h2 class="mt-3 text-3xl font-bold text-white">Mapa académico</h2>
                 <p class="mt-3 text-sm leading-7 text-slate-300">
-                    La estructura privilegia NRC, grupo, profesor y salon para una revision administrativa mucho mas limpia.
+                    Cada tarjeta representa un grupo con su NRC, materia y bloques de clase asignados.
                 </p>
 
                 <div class="mt-6 grid gap-4 sm:grid-cols-2">
                     <div class="rounded-[22px] bg-white/10 p-4">
-                        <p class="text-xs uppercase tracking-[0.2em] text-slate-300">Formato</p>
-                        <p class="mt-2 text-lg font-bold text-white">Resumen visual</p>
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-300">Organizado por</p>
+                        <p class="mt-2 text-lg font-bold text-white">NRC y grupo</p>
                     </div>
                     <div class="rounded-[22px] bg-white/10 p-4">
-                        <p class="text-xs uppercase tracking-[0.2em] text-slate-300">Uso</p>
-                        <p class="mt-2 text-lg font-bold text-white">Presentacion al cliente</p>
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-300">Fuente</p>
+                        <p class="mt-2 text-lg font-bold text-white">PDF importado</p>
                     </div>
                 </div>
             </div>
@@ -69,24 +69,24 @@
 
         <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <article class="metric-card">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Pagina actual</p>
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">NRC en esta página</p>
                 <p class="premium-number mt-4">{{ $horariosAgrupados->count() }}</p>
-                <p class="mt-3 text-sm text-slate-600">NRC visibles.</p>
+                <p class="mt-3 text-sm text-slate-600">Grupos en vista actual.</p>
             </article>
             <article class="metric-card">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Grupos</p>
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Grupos únicos</p>
                 <p class="premium-number mt-4">{{ $horariosAgrupados->flatten(1)->pluck('grupo_id')->unique()->count() }}</p>
-                <p class="mt-3 text-sm text-slate-600">Equipos en esta pagina.</p>
+                <p class="mt-3 text-sm text-slate-600">Equipos distintos en esta página.</p>
             </article>
             <article class="metric-card">
                 <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Con docente</p>
                 <p class="premium-number mt-4">{{ $horariosAgrupados->flatten(1)->whereNotNull('profesor_id')->count() }}</p>
-                <p class="mt-3 text-sm text-slate-600">Bloques ya vinculados.</p>
+                <p class="mt-3 text-sm text-slate-600">Bloques con docente asignado.</p>
             </article>
             <article class="metric-card">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Estado</p>
-                <p class="mt-4 text-2xl font-bold text-slate-900">Listo para demo</p>
-                <p class="mt-3 text-sm text-slate-600">Lectura clara y ordenada.</p>
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Sin docente</p>
+                <p class="premium-number mt-4">{{ $horariosAgrupados->flatten(1)->whereNull('profesor_id')->count() }}</p>
+                <p class="mt-3 text-sm text-slate-600">Bloques pendientes de asignación.</p>
             </article>
         </section>
 
@@ -111,7 +111,11 @@
                                 </div>
                                 <div>
                                     <h2 class="text-2xl font-bold">{{ $principal->grupo->materia->nombre ?? 'Sin nombre de materia' }}</h2>
-                                    <p class="mt-1 text-sm text-slate-500">Resumen academico del equipo importado.</p>
+                                    @if($principal->profesor)
+                                        <p class="mt-1 text-sm text-slate-500">Docente: <span class="font-semibold">{{ $principal->profesor->nombre }}</span></p>
+                                    @else
+                                        <p class="mt-1 text-sm text-amber-600">Sin docente asignado</p>
+                                    @endif
                                 </div>
                             </div>
 

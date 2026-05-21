@@ -12,7 +12,7 @@
             </a>
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div class="space-y-3">
-                    <span class="eyebrow">Detalle del grupo</span>
+                    <span class="eyebrow">Gestión del grupo</span>
                     <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{{ $grupo->materia->nombre ?? 'Grupo' }}</h1>
                     <div class="flex flex-wrap gap-2">
                         <span class="rounded-full bg-slate-950 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-white">{{ $grupo->materia->clave ?? 'SIN CLAVE' }}</span>
@@ -23,30 +23,36 @@
 
                 {{-- Acciones --}}
                 <div class="flex flex-wrap gap-2">
+                    {{-- Asistencia: acción principal --}}
                     <a href="{{ route('asistencia.scanner', $grupo) }}"
                         class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition"
-                        style="background: linear-gradient(135deg,#0f766e 0%,#14b8a6 100%); box-shadow:0 8px 24px rgba(15,118,110,0.28);">
+                        style="background: linear-gradient(135deg,#0f766e 0%,#14b8a6 100%); box-shadow:0 8px 24px rgba(15,118,110,0.28);"
+                        title="Tomar asistencia escaneando el código QR de cada alumno">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9V5a2 2 0 012-2h4M3 15v4a2 2 0 002 2h4m10-16h-4a2 2 0 00-2 2v4m6 10h-4a2 2 0 01-2-2v-4"/></svg>
-                        Lista QR
+                        Asistencia QR
                     </a>
                     <a href="{{ route('asistencia.manual', $grupo) }}"
-                        class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+                        class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                        title="Marcar asistencias manualmente con lista">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                        Lista manual
+                        Pase de lista
                     </a>
                     <a href="{{ route('grupos.importar.form', $grupo) }}"
-                        class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+                        class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                        title="Importar la lista de alumnos desde el archivo HTM de Secretaría">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                        Importar lista HTM
+                        Importar alumnos
                     </a>
                     <a href="{{ route('grupos.teams.form', $grupo) }}"
-                        class="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-5 py-2.5 text-sm font-semibold text-purple-800 hover:bg-purple-100 transition">
+                        class="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-5 py-2.5 text-sm font-semibold text-purple-800 hover:bg-purple-100 transition"
+                        title="Importar calificaciones desde un archivo Excel de Teams">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        Calificaciones Teams
+                        Importar de Excel
                     </a>
                     <a href="{{ route('grupos.exportar', $grupo) }}"
                         class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition"
-                        style="background: linear-gradient(135deg,#16a34a 0%,#22c55e 100%); box-shadow:0 8px 24px rgba(22,163,74,0.20);">
+                        style="background: linear-gradient(135deg,#16a34a 0%,#22c55e 100%); box-shadow:0 8px 24px rgba(22,163,74,0.20);"
+                        title="Descargar el concentrado de calificaciones en formato Excel">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                         Exportar Excel
                     </a>
@@ -69,8 +75,8 @@
             <section class="panel overflow-hidden">
                 <div class="border-b border-slate-200/80 px-6 py-5 flex items-center justify-between">
                     <div>
-                        <h2 class="text-xl font-bold">Categorias de ponderacion</h2>
-                        <p class="mt-0.5 text-xs text-slate-500">Total: {{ $categorias->sum('ponderacion') }}% de 100%</p>
+                        <h2 class="text-xl font-bold">Categorías de calificación</h2>
+                        <p class="mt-0.5 text-xs text-slate-500">Ponderación acumulada: {{ $categorias->sum('ponderacion') }}% de 100%</p>
                     </div>
                 </div>
 
@@ -94,18 +100,19 @@
                         @endforeach
                     </div>
                 @else
-                    <p class="px-6 py-4 text-sm text-slate-400">Sin categorias. Agrega una para comenzar.</p>
+                    <p class="px-6 py-4 text-sm text-slate-400">Sin categorías. Agrega una para comenzar.</p>
                 @endif
 
                 <form method="POST" action="{{ route('categorias.store', $grupo) }}" class="border-t border-slate-200/80 px-6 py-5 space-y-3">
                     @csrf
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Nueva categoria</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Nueva categoría</p>
                     <div class="flex flex-wrap gap-2">
                         <input type="text" name="nombre" placeholder="Ej: Parcial 1" required
                             class="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white/70 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400">
                         <input type="number" name="ponderacion" placeholder="%" min="0.01" max="100" step="0.01" required
-                            class="w-20 rounded-2xl border border-slate-200 bg-white/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400">
-                        <button type="submit" class="btn-primary px-4 py-2 text-sm">+</button>
+                            class="w-20 rounded-2xl border border-slate-200 bg-white/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            title="Porcentaje de ponderación">
+                        <button type="submit" class="btn-primary px-4 py-2 text-sm">Agregar</button>
                     </div>
                     @error('nombre')<p class="text-xs text-red-500">{{ $message }}</p>@enderror
                     @error('ponderacion')<p class="text-xs text-red-500">{{ $message }}</p>@enderror
@@ -115,7 +122,8 @@
             {{-- Actividades --}}
             <section class="panel overflow-hidden">
                 <div class="border-b border-slate-200/80 px-6 py-5">
-                    <h2 class="text-xl font-bold">Actividades</h2>
+                    <h2 class="text-xl font-bold">Actividades y tareas</h2>
+                    <p class="mt-0.5 text-xs text-slate-500">Cada actividad pertenece a una categoría de calificación.</p>
                 </div>
 
                 @if($grupo->actividades->isNotEmpty())
@@ -141,7 +149,7 @@
                         @endforeach
                     </div>
                 @else
-                    <p class="px-6 py-4 text-sm text-slate-400">Sin actividades todavia.</p>
+                    <p class="px-6 py-4 text-sm text-slate-400">Aún no hay actividades en este grupo.</p>
                 @endif
 
                 @if($categorias->isNotEmpty())
@@ -153,15 +161,19 @@
                                 class="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white/70 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400">
                             <select name="categoria_id" required
                                 class="w-full rounded-2xl border border-slate-200 bg-white/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 sm:w-auto">
+                                <option value="" disabled>Seleccionar categoría</option>
                                 @foreach($categorias as $cat)
                                     <option value="{{ $cat->id }}">{{ $cat->nombre }}</option>
                                 @endforeach
                             </select>
-                            <button type="submit" class="btn-primary px-4 py-2 text-sm">+</button>
+                            <button type="submit" class="btn-primary px-4 py-2 text-sm">Agregar</button>
                         </div>
                     </form>
                 @else
-                    <p class="border-t border-slate-200/80 px-6 py-4 text-xs text-amber-700 bg-amber-50">Agrega primero una categoria antes de crear actividades.</p>
+                    <div class="border-t border-slate-200/80 px-6 py-4 bg-amber-50 flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <p class="text-xs text-amber-700">Primero crea una categoría de calificación para poder agregar actividades.</p>
+                    </div>
                 @endif
             </section>
 
@@ -171,7 +183,7 @@
         <section class="panel" style="overflow: hidden;">
             <div class="border-b border-slate-200/80 px-6 py-5">
                 <h2 class="text-xl font-bold">Concentrado de calificaciones</h2>
-                <p class="mt-0.5 text-xs text-slate-500">{{ $alumnos->count() }} alumno(s) activo(s)</p>
+                <p class="mt-0.5 text-xs text-slate-500">{{ $alumnos->count() }} alumno(s) activo(s) · Haz clic en "Calificar" para capturar notas</p>
             </div>
 
             @if($concentrado->isEmpty() || $categorias->isEmpty())

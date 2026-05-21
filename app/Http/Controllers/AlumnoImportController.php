@@ -6,6 +6,7 @@ use App\Models\Alumno;
 use App\Models\Grupo;
 use App\Models\Profesor;
 use App\Models\User;
+use App\Services\CalificacionesService;
 use App\Services\HtmListaParser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -180,7 +181,7 @@ class AlumnoImportController extends Controller
 
     // ─── Alumno dashboard ────────────────────────────────────────────────────
 
-    public function dashboard()
+    public function dashboard(CalificacionesService $calificaciones)
     {
         if (auth()->user()->role !== 'alumno') {
             abort(403);
@@ -196,34 +197,14 @@ class AlumnoImportController extends Controller
                 ->with(['materia', 'profesor', 'horarios.salon', 'categorias.actividades.calificaciones'])
                 ->get();
 
-            $gruposConConcentrado = $grupos->map(function ($grupo) use ($alumno) {
+            $gruposConConcentrado = $grupos->map(function ($grupo) use ($alumno, $calificaciones) {
                 $categorias = $grupo->categorias;
-
-                $filaCats = $categorias->map(function ($cat) use ($alumno) {
-                    $actividades = $cat->actividades->map(function ($act) use ($alumno) {
-                        $cal = $act->calificaciones->firstWhere('alumno_id', $alumno->id);
-                        return ['actividad' => $act, 'calificacion' => $cal?->calificacion];
-                    });
-
-                    $valores  = $actividades->whereNotNull('calificacion')->pluck('calificacion');
-                    $promedio = $valores->isNotEmpty() ? round($valores->average(), 2) : null;
-
-                    return ['categoria' => $cat, 'actividades' => $actividades, 'promedio' => $promedio];
-                });
-
-                $ponderadoTotal  = 0;
-                $ponderacionAcum = 0;
-                $filaCats->each(function ($f) use (&$ponderadoTotal, &$ponderacionAcum) {
-                    if ($f['promedio'] !== null) {
-                        $ponderadoTotal  += $f['promedio'] * ($f['categoria']->ponderacion / 100);
-                        $ponderacionAcum += $f['categoria']->ponderacion;
-                    }
-                });
+                $fila = $calificaciones->construirConcentrado($grupo, collect([$alumno]), $categorias)->first();
 
                 return [
                     'grupo'              => $grupo,
-                    'categorias'         => $filaCats,
-                    'promedio_ponderado' => $ponderacionAcum > 0 ? round($ponderadoTotal, 2) : null,
+                    'categorias'         => $fila['categorias'],
+                    'promedio_ponderado' => $fila['promedio_ponderado'],
                 ];
             });
         }

@@ -13,9 +13,15 @@ class TeamsCalificacionesParser
         return $this->rowCount;
     }
 
-    public function parse(string $path): array
+    public function parse(string $path, string $extension = 'xlsx'): array
     {
-        $sheets = Excel::toArray([], $path);
+        $readerType = match($extension) {
+            'csv'  => \Maatwebsite\Excel\Excel::CSV,
+            'xls'  => \Maatwebsite\Excel\Excel::XLS,
+            default => \Maatwebsite\Excel\Excel::XLSX,
+        };
+
+        $sheets = Excel::toArray([], $path, null, $readerType);
         $rows   = $sheets[0] ?? [];
         $this->rowCount = count($rows);
 

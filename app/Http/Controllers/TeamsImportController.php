@@ -35,11 +35,13 @@ class TeamsImportController extends Controller
             'archivo' => 'required|file|extensions:xlsx,xls',
         ]);
 
-        $path   = $request->file('archivo')->getRealPath();
-        $parser = new TeamsCalificacionesParser();
+        $file      = $request->file('archivo');
+        $path      = $file->getRealPath();
+        $extension = strtolower($file->getClientOriginalExtension());
+        $parser    = new TeamsCalificacionesParser();
 
         try {
-            $parsed = $parser->parse($path);
+            $parsed = $parser->parse($path, $extension);
         } catch (\Throwable $e) {
             return back()->with('error', 'No se pudo leer el archivo: ' . $e->getMessage());
         }
